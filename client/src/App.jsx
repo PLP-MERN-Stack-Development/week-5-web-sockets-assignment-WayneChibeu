@@ -285,16 +285,16 @@ function App() {
                     );
                   })
                 )}
-                
-                {/* Typing Indicator */}
-                {otherTypingUsers.length > 0 && (
+
+              {/* Typing Indicator */}
+              {otherTypingUsers.length > 0 && (
                   <div className="flex justify-start mb-4">
                     <div className="bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-400 px-4 py-3 rounded-lg text-base">
                       {otherTypingUsers.join(', ')} {otherTypingUsers.length === 1 ? 'is' : 'are'} typing...
                     </div>
-                  </div>
-                )}
-                
+                </div>
+              )}
+
                 <div ref={messagesEndRef} />
               </div>
               

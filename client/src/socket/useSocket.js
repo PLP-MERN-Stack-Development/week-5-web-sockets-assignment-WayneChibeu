@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { io } from 'socket.io-client';
 
 // Get the backend URL from environment variables
-const SOCKET_URL = import.meta.env.VITE_BACKEND_URL;
+const SOCKET_URL = import.meta.env.VITE_SOCKET_SERVER_URL;
 
 // Initialize the socket client
 // autoConnect is set to false so we can manually connect when a username is provided

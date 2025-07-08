@@ -4,7 +4,7 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url'; 
+import { fileURLToPath } from 'url';
 
 import connectDB from './config/db.js'; 
 import Message from './models/messagemodel.js'; 
@@ -18,30 +18,30 @@ const startServer = async () => {
   try {
     await connectDB(); 
 
-    const app = express();
-    const server = http.createServer(app);
+const app = express();
+const server = http.createServer(app);
 
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-    const io = new Server(server, {
+const io = new Server(server, {
       // REMOVED: path: '/my-custom-socket-path/', // Reverting to default /socket.io/ path
-      cors: {
+  cors: {
         origin: process.env.CLIENT_URL || 'http://localhost:5173',
-        methods: ['GET', 'POST'],
-        credentials: true,
-      },
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
       transports: ['websocket', 'polling'], // Explicitly prefer websocket
-    });
+});
 
     // Middleware
-    app.use(cors());
-    app.use(express.json());
+app.use(cors());
+app.use(express.json());
     app.use(express.static(path.join(__dirname, 'public'))); // For serving static files if any
 
     // --- Socket.io connection handler ---
     io.on('connection', async (socket) => { // Added 'async' here to use await
-      console.log(`[Server Socket] User connected: ${socket.id}`);
+  console.log(`[Server Socket] User connected: ${socket.id}`); 
 
       // --- CATCH-ALL LISTENER FOR DEBUGGING ---
       socket.onAny((eventName, ...args) => {
@@ -79,14 +79,14 @@ const startServer = async () => {
       try {
         // For now, fetch messages from all rooms to show general chat history
         // Later we'll make this room-specific when the client requests a specific room
-        const recentMessages = await Message.find({})
-          .sort({ createdAt: 1 })
+    const recentMessages = await Message.find({})
+      .sort({ createdAt: 1 })
           .limit(50); // Fetch last 50 messages for chat history
         socket.emit('chat_history', recentMessages); // Emit a new event for chat history
-        console.log(`[Server Socket] Emitted chat_history to ${socket.id}`);
-      } catch (error) {
-        console.error('[Server Socket] Error fetching chat history:', error);
-      }
+    console.log(`[Server Socket] Emitted chat_history to ${socket.id}`);
+  } catch (error) {
+    console.error('[Server Socket] Error fetching chat history:', error);
+  }
 
       // Handle incoming messages
       socket.on('message', async (data) => {
@@ -102,7 +102,7 @@ const startServer = async () => {
         
         // Save message to database
         try {
-          const newMessage = new Message({
+    const newMessage = new Message({
             username: data.username,
             message: data.message,
             room: data.room || 'general', // Default to 'general' if no room specified
@@ -112,28 +112,28 @@ const startServer = async () => {
           });
           await newMessage.save();
           console.log(`[Server Socket] Message saved to database: ${data.username}: ${data.message}`);
-        } catch (error) {
+    } catch (error) {
           console.error('[Server Socket] Error saving message to database:', error);
-        }
+    }
         
         console.log(`[Server Socket] Message broadcasted to all clients: ${data.username}: ${data.message}`);
-      });
+  });
 
       // Handle typing indicator
-      socket.on('typing', (isTyping) => {
-        if (users[socket.id]) {
-          const username = users[socket.id].username;
+  socket.on('typing', (isTyping) => {
+    if (users[socket.id]) {
+      const username = users[socket.id].username;
 
-          if (isTyping) {
-            typingUsers[socket.id] = username;
-          } else {
-            delete typingUsers[socket.id];
-          }
+      if (isTyping) {
+        typingUsers[socket.id] = username;
+      } else {
+        delete typingUsers[socket.id];
+      }
 
-          io.emit('typing_users', Object.values(typingUsers));
-          console.log(`[Server Socket] Emitted typing_users: ${Object.values(typingUsers).join(', ')}`);
-        }
-      });
+      io.emit('typing_users', Object.values(typingUsers));
+      console.log(`[Server Socket] Emitted typing_users: ${Object.values(typingUsers).join(', ')}`);
+    }
+  });
 
       // Handle private messages
       socket.on('private_message', async (data) => {
@@ -158,7 +158,7 @@ const startServer = async () => {
             username: data.from,
             message: data.message,
             timestamp: new Date(),
-            isPrivate: true,
+      isPrivate: true,
             from: data.from,
             to: data.to
           });
@@ -187,47 +187,47 @@ const startServer = async () => {
       });
 
       // Handle disconnection
-      socket.on('disconnect', (reason) => {
-        console.log(`[Server Socket] User disconnected: ${socket.id}. Reason: ${reason}`);
-        if (users[socket.id]) {
-          const { username } = users[socket.id];
-          io.emit('user_left', { username, id: socket.id });
-          console.log(`[Server Socket] ${username} left the chat`);
-        }
+  socket.on('disconnect', (reason) => {
+    console.log(`[Server Socket] User disconnected: ${socket.id}. Reason: ${reason}`);
+    if (users[socket.id]) {
+      const { username } = users[socket.id];
+      io.emit('user_left', { username, id: socket.id });
+      console.log(`[Server Socket] ${username} left the chat`);
+    }
 
-        delete users[socket.id];
-        delete typingUsers[socket.id];
+    delete users[socket.id];
+    delete typingUsers[socket.id];
 
-        io.emit('user_list', Object.values(users));
-        io.emit('typing_users', Object.values(typingUsers));
-      });
-    });
+    io.emit('user_list', Object.values(users));
+    io.emit('typing_users', Object.values(typingUsers));
+  });
+});
 
     // --- HTTP API routes (now fetch from DB where applicable) ---
-    app.get('/api/messages', async (req, res) => {
-      try {
-        const allMessages = await Message.find({}).sort({ createdAt: 1 });
-        res.json(allMessages);
-      } catch (error) {
-        console.error('[Server HTTP] Error fetching all messages via HTTP:', error);
-        res.status(500).json({ message: 'Failed to fetch messages.' });
-      }
-    });
+app.get('/api/messages', async (req, res) => {
+  try {
+    const allMessages = await Message.find({}).sort({ createdAt: 1 });
+    res.json(allMessages);
+  } catch (error) {
+    console.error('[Server HTTP] Error fetching all messages via HTTP:', error);
+    res.status(500).json({ message: 'Failed to fetch messages.' });
+  }
+});
 
-    app.get('/api/users', (req, res) => {
+app.get('/api/users', (req, res) => {
       res.json(Object.values(users)); // Still returns in-memory active users
-    });
+});
 
     // Root route
-    app.get('/', (req, res) => {
-      res.send('Socket.io Chat Server is running and connected to MongoDB');
-    });
+app.get('/', (req, res) => {
+  res.send('Socket.io Chat Server is running and connected to MongoDB');
+});
 
     // Start server
-    const PORT = process.env.PORT || 5000;
-    server.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
   } catch (error) {
     console.error('Failed to start server due to DB connection error:', error);
     process.exit(1); // Exit if DB connection fails
