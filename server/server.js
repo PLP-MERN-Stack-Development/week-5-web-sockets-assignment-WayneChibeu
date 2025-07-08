@@ -7,7 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url'; 
 
 import connectDB from './config/db.js'; 
-import Message from './models/messageModel.js'; 
+import Message from './models/messagemodel.js'; 
 
 dotenv.config();
 
