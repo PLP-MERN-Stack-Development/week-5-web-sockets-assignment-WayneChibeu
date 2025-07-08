@@ -90,11 +90,11 @@ app.use(express.json());
 
       // Handle incoming messages
       socket.on('message', async (data) => {
-        console.log(`[Server Socket] >>> RECEIVED 'message' from ${data.username}: ${data.message} <<<`);
+        console.log(`[Server Socket] >>> RECEIVED 'message' from ${data.sender}: ${data.message} <<<`);
         
         // Broadcast the message to all connected clients
         io.emit('message', {
-          username: data.username,
+          username: data.sender,
           message: data.message,
           timestamp: new Date(),
           room: data.room || 'general'
@@ -102,22 +102,23 @@ app.use(express.json());
         
         // Save message to database
         try {
-    const newMessage = new Message({
-            username: data.username,
+          const newMessage = new Message({
+            sender: data.sender,
+            senderId: data.senderId,
             message: data.message,
             room: data.room || 'general', // Default to 'general' if no room specified
             isPrivate: data.isPrivate || false,
-            recipient: data.recipient || null,
+            to: data.to || null,
             timestamp: new Date()
           });
           await newMessage.save();
-          console.log(`[Server Socket] Message saved to database: ${data.username}: ${data.message}`);
-    } catch (error) {
+          console.log(`[Server Socket] Message saved to database: ${data.sender}: ${data.message}`);
+        } catch (error) {
           console.error('[Server Socket] Error saving message to database:', error);
-    }
+        }
         
-        console.log(`[Server Socket] Message broadcasted to all clients: ${data.username}: ${data.message}`);
-  });
+        console.log(`[Server Socket] Message broadcasted to all clients: ${data.sender}: ${data.message}`);
+      });
 
       // Handle typing indicator
   socket.on('typing', (isTyping) => {
