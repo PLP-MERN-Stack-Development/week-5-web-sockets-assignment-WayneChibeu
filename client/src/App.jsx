@@ -84,9 +84,12 @@ function App() {
           message: currentMessage.trim()
         });
       } else {
-        // Send public message to current room
+        // Find the current user object to get the socket id
+        const currentUserObj = users.find(u => u.username === username);
+        // Send public message to current room with senderId and sender
         sendMessage({
-          username,
+          senderId: currentUserObj?.id,
+          sender: username,
           message: currentMessage.trim(),
           room: currentRoom
         });
