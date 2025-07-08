@@ -1,0 +1,342 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  @apply bg-gray-50 text-gray-800;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+*:focus {
+  outline: 2px solid theme('colors.indigo.500'); 
+  outline-offset: 2px;
+  border-radius: 0.375rem; 
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.7);
+}
+
+/* Form styles */
+.input-field {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  background: white;
+  color: #1f2937;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.dark .input-field {
+  background: #374151;
+  border-color: #4b5563;
+  color: #f9fafb;
+}
+
+.dark .input-field:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.1);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -1px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.6s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out;
+}
+
+/* Basic responsive improvements */
+@media (max-width: 768px) {
+  /* Ensure buttons are touch-friendly */
+  button {
+    min-height: 44px;
+  }
+  
+  /* Better spacing on mobile */
+  .p-4 {
+    padding: 1rem;
+  }
+  
+  /* Responsive text sizes */
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .text-xl {
+    font-size: 1.25rem;
+  }
+}
+
+/* Focus indicators for accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Dark mode focus indicators */
+.dark button:focus-visible,
+.dark input:focus-visible,
+.dark select:focus-visible {
+  outline-color: #60a5fa;
+}
+
+html.dark {
+  @apply bg-gray-900 text-gray-200;
+}
+
+html.dark *:focus {
+  outline: 2px solid theme('colors.blue.400'); 
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Message bubble styles */
+.message-bubble {
+  padding: 16px 22px;
+  margin: 0 0 0 0;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  max-width: 80%;
+  word-break: break-word;
+  transition: background 0.2s;
+}
+.bubble-own {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+.bubble-other {
+  background: #f3f4f6;
+  color: #1f2937;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e5e7eb;
+  align-self: flex-start;
+}
+.dark .bubble-other {
+  background: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+
+/* More spacing for chat area and sidebar */
+@media (min-width: 768px) {
+  .max-w-6xl {
+    max-width: 1100px !important;
+  }
+  .p-8 {
+    padding: 2.5rem !important;
+  }
+}
+
+/* More space between messages */
+.mb-3 {
+  margin-bottom: 0.75rem !important;
+}
+
+/* Sidebar user list spacing */
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1.25rem !important;
+}
+
+/* Responsive improvements for chat bubbles */
+@media (max-width: 600px) {
+  .message-bubble {
+    padding: 12px 10px;
+    font-size: 1rem;
+    max-width: 95%;
+  }
+}
+
+/* Modern chat bubble styles */
+.message-bubble-modern {
+  padding: 16px 22px;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  max-width: 100%;
+  word-break: break-word;
+  transition: background 0.2s;
+  margin-bottom: 0;
+}
+.bubble-own-modern {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #fff;
+  border-bottom-right-radius: 6px;
+  align-self: flex-end;
+}
+.bubble-other-modern {
+  background: #f3f4f6;
+  color: #1f2937;
+  border-bottom-left-radius: 6px;
+  border: 1px solid #e5e7eb;
+  align-self: flex-start;
+}
+.dark .bubble-other-modern {
+  background: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+
+/* Avatar styles */
+.avatar-initial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  color: #fff;
+}
+
+/* Fade-in animation for messages */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.5s ease;
+}
+
+/* Pill button styles for room selector (mostly handled by Tailwind) */
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .max-w-6xl {
+    max-width: 100vw !important;
+  }
+  .p-8 {
+    padding: 1.25rem !important;
+  }
+  .rounded-xl, .rounded-2xl {
+    border-radius: 1rem !important;
+  }
+}
+
+/* Compact chat bubble styles */
+.message-bubble-compact {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 90%;
+  word-break: break-word;
+  margin-bottom: 0;
+}
+.bubble-own-compact {
+  background: #2563eb;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.bubble-other-compact {
+  background: #e5e7eb;
+  color: #1f2937;
+  border-bottom-left-radius: 4px;
+}
+.dark .bubble-other-compact {
+  background: #374151;
+  color: #f9fafb;
+}
